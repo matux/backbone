@@ -338,7 +338,7 @@ extension OptionSet where Self: Semigroup, Element == Self {
 
   @_transparent
   public static func ++ (xs: Self, x: Self) -> Self {
-    return xs => mutating { $0.insert(x) }
+    return xs |> mutating { $0.insert(x) }
   }
 }
 
@@ -351,7 +351,7 @@ extension SetAlgebra where Self: Semigroup {
 
   @_transparent
   public static func ++ (xs: Self, x: Element) -> Self {
-    return xs => mutating { $0.insert(x) }
+    return xs |> mutating { $0.insert(x) }
   }
 }
 

@@ -79,7 +79,7 @@ extension Type {
   /// A functional synonym of the conditional type downcast infix `as?`.
   ///
   ///     1> let keyValues = [String: Any]()
-  ///     2> let value = keyValues["someKey"] => T.as(Int.self)
+  ///     2> let value = keyValues["someKey"] |> T.as(Int.self)
   ///     // value: Int? = nil
   @_transparent
   public static func `as`<Γ, τ>(_: Γ.Type) -> (τ) -> Γ? {

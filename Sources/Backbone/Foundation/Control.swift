@@ -50,9 +50,9 @@ extension UIControl {
   ) -> Self {
     return const(self)(
       Observer(event: events, action: closure)
-        =>> add(events: *events, action: action)
-        => (observers[*events] ?? .empty).appending
-        => { observers[*events] = $0 })
+        |>> add(events: *events, action: action)
+        |> (observers[*events] ?? .empty).appending
+        |> { observers[*events] = $0 })
   }
 
   @discardableResult

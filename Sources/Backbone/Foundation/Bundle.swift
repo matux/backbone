@@ -40,8 +40,8 @@ extension Bundle {
 
   public subscript<Inferred>(key: InfoDictionaryKey) -> Inferred {
     return key.rawValue
-      => object(forInfoDictionaryKey:) !! "No object under \(key)"
-      => Type.cast !! "Object for \(key) is not a \(Inferred.self)"
+      |> object(forInfoDictionaryKey:) !! "No object under \(key)"
+      |> Type.cast !! "Object for \(key) is not a \(Inferred.self)"
   }
 
   public static func string(for key: InfoDictionaryKey) -> String {

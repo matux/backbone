@@ -117,7 +117,7 @@ extension URL: ExpressibleByStringLiteral {
   ///   bundle or `nil` if the file could not be located.
   @inlinable
   public init(resource path: StaticString, in bundle: Bundle = .main) {
-    guard let url =  URL(fileURLWithPath: "\(path)") => {
+    guard let url =  URL(fileURLWithPath: "\(path)") |> {
       bundle.url(
         forResource: $0.deletingPathExtension().lastPathComponent,
         withExtension: $0.pathExtension,

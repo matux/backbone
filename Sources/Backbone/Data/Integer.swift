@@ -125,8 +125,8 @@ extension BinaryInteger {
   /// This is a synonym of the `replicate` free function.
   ///
   ///     "\(0.0 / 0)" * 10
-  ///       => forEach { print($0, terminator: "") }
-  ///       => { print(" batman!") }
+  ///       |> forEach { print($0, terminator: "") }
+  ///       |> { print(" batman!") }
   ///     // prints "nannannannannannannannannannan batman!"
   ///
   /// - Requires: `times` must be >= 0.
@@ -181,7 +181,7 @@ extension BinaryInteger {
   /// a function to be applied repeatedly in order to generate the elements
   /// that the resulting array will contain.
   ///
-  ///     Int.random * 10 => each { print($0, terminator: "") }
+  ///     Int.random * 10 |> each { print($0, terminator: "") }
   ///     // prints 10 random numbers
   ///
   /// - Requires: `times` must be >= 0.

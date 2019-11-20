@@ -117,9 +117,9 @@ private let initialTime = now
 
 private var prefix: String {
   return .zero
-    => mutating { ptid(&$0) }
-    => { "\($0 & 0xfff, format: "%03x")" }
-    => { "░▒▓█ \(time):\($0):\(qos_class_self().rawValue)"
+    |> mutating { ptid(&$0) }
+    |> { "\($0 & 0xfff, format: "%03x")" }
+    |> { "░▒▓█ \(time):\($0):\(qos_class_self().rawValue)"
   }
 }
 
@@ -155,7 +155,7 @@ private let timebase: UInt64 = {
 
 @_transparent
 private var time: String {
-  secmsec() => {
+  secmsec() |> {
     "\("\($0)".leftPadded(width: 3, with: "0")).\("\($1)".leftPadded(width: 3, with: "0"))"
   }
 }

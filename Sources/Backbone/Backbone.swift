@@ -58,8 +58,9 @@ prefix operator ∏ // Product, alt+shift+p
 
 // MARK: — Higher-order
 
-infix operator =>  : FunctionMap
-infix operator =>> : FunctionMap
+infix operator <|  : FunctionArrowPrecedence
+infix operator |>  : FunctionMap
+infix operator |>> : FunctionMap
 infix operator >>> : Composition
 infix operator <<< : Composition
 infix operator >=> : Composition
@@ -69,15 +70,16 @@ infix operator •   : Exponentiation // U+2218
 
 // MARK: — High-fructose
 
-prefix  operator ^ // Keypath as function, `^\.path`
+prefix  operator ^ // Keypath getter, `^\.path`
 prefix  operator * // Indirection/dereference operator.
 postfix operator & // Curry/Partial application
 
 // MARK: – Ref table
 
-///** op   name     signature                      definition            imperative approximate**
-///  `=> ` map     `(A, A -> B) -> B`             `x => f => g => h`    `{ (x: T) -> U in h(g(f(x))) }(x)`
-///  `=>>` tap     `(A, A -> ()) -> A`            `x =>> f =>> g =>> h` `{ (x: T) -> T in h(g(f(x))); return x }(x)`
+///** op   name     signature                      example              imperative approximate**
+///  `<| ` map     `(A -> B, A) -> B`             `f <| (x, y)`         `{ (x: A, y: B) -> U in f(x, y) }((x, y))`
+///  `|> ` map     `(A, A -> B) -> B`             `x |> f |> g |> h`    `{ (x: T) -> U in h(g(f(x))) }(x)`
+///  `|>>` tap     `(A, A -> ()) -> A`            `x |>> f |>> g |>> h` `{ (x: T) -> T in h(g(f(x))); return x }(x)`
 ///  `>=>` chain   `(B -> C?,A -> B?) -> A -> C?` `x >>= f >=> g >=> h` `{ (x: M<T>) -> M<U> in x.flatMap(f).flatMap(g).flatMap(h) }(mx)`
 ///  `>>>` pipe    `(B -> C, A -> B) -> A -> C)`  `x >>= f >>> g >>> h` `{ (x: T) -> U in h(g(f(x))) }(x)`
 ///  ` • ` compose `(A -> B, B -> C) -> A -> C`   `(f • g • h)(x)`      `{ (x: T) -> U in f(g(h(x))) }(x)`
@@ -215,7 +217,7 @@ extension Nil: SelfAware { }
 /// A reverse application operator providing notational convenience, analogous
 /// to the [shell pipe](https://en.wikipedia.org/wiki/Pipeline_(Unix)).
 ///
-///      x => ƒ₁ => ƒ₂ => ƒ₃      x => ƒ₁ >>> ƒ₂ >>> ƒ₃
+///      x |> ƒ₁ |> ƒ₂ |> ƒ₃      x |> ƒ₁ >>> ƒ₂ >>> ƒ₃
 ///     └───────┘     │     │    │    │      └─────────┘
 ///     └─────────────┘     │    │    └────────────────┘
 ///     └───────────────────┘    └─────────────────────┘
@@ -226,10 +228,10 @@ extension Nil: SelfAware { }
 /// - Note: Use a function parameter names to disambiguate between functions
 ///   with the same name and signature:
 ///
-///       4 => "some text".prefix
+///       4 |> "some text".prefix
 ///       // ambiguous: prefix(upTo:) or prefix(through:)
 ///
-///       4 => "some text".prefix(upTo:)
+///       4 |> "some text".prefix(upTo:)
 ///       // not ambiguous
 ///
 /// - Parameters:
@@ -238,7 +240,27 @@ extension Nil: SelfAware { }
 ///     or a different type.
 /// - Returns: The result of applying `transform` to `value`.
 @_transparent
-public func => <T, U>(value: T, transform: (T) -> U) -> U {
+public func |> <T, U>(value: T, transform: (T) -> U) -> U {
+  return transform(value)
+}
+
+/// Function application
+///
+/// Standard function application.
+///
+/// Allows the reintroduction of named parameters to _n-ary_ callbacks:
+///
+///     func defer(completion: @escaping (_ result: T, _ error: Error?) -> ()) {
+///       completion <| (result: T(), error: .none)
+///     }
+///
+/// vs.
+///
+///     func defer(completion: @escaping (T, Error?) -> ()) {
+///       completion(T(), .none)
+///     }
+@_transparent
+public func <| <T, U>(transform: (T) -> U, value: T) -> U {
   return transform(value)
 }
 
@@ -352,7 +374,7 @@ public func tap<T>(
 /// side-effects, passing the value as a parameter, discarding the result and
 /// returning the original value.
 @_transparent
-public func =>> <T>(value: T, perform: (T) throws -> ()) rethrows -> T {
+public func |>> <T>(value: T, perform: (T) throws -> ()) rethrows -> T {
   return const(value)(try perform(value))
 }
 
@@ -442,7 +464,7 @@ public func both<T, U>(_ f: @escaping (T) -> U) -> (T, T) -> (U, U) {
 public func flatMap<A: Monoid, B, Aʼ>(
   _ transform: @escaping (Aʼ) -> (A, B)
 ) -> (A, Aʼ) -> (A, B) {
-  return { a, aʼ in transform(aʼ) => { aʼ, b in (a ++ aʼ, b) } }
+  return { a, aʼ in transform(aʼ) |> { aʼ, b in (a ++ aʼ, b) } }
 }
 
 // MARK: · Zip2
@@ -1152,7 +1174,7 @@ public func over<Root, Value>(
   _ path: WritableKeyPath<Root, Value>,
   with transform: @escaping (Value) -> Value
 ) -> (Root) -> () {
-  return ((path, transform) => uncurry(over)) >>> discard
+  return ((path, transform) |> uncurry(over)) >>> discard
 }
 
 // MARK: · KeyPaths: Prefix
@@ -1332,7 +1354,7 @@ public func fixS<A, B>(
   return
     { (g: @escaping (Any) -> (A) -> B) in f(g(g)) }(
     { (g: @escaping (Any) -> (A) -> B) in f(g(g)) }
-      => T.reinterpretCast)
+      |> T.reinterpretCast)
 }
 
 /// The `Z·` combinator is only a pointful variant of `Z` that demonstrates
@@ -1346,7 +1368,7 @@ public func fixS2<A, B>(
   return
     { (x: @escaping (Any) -> (A) -> B) in { v in f(x(x))(v) } }(
     { (x: @escaping (Any) -> (A) -> B) in { v in f(x(x))(v) } }
-      => T.reinterpretCast)
+      |> T.reinterpretCast)
 }
 
 /// Z Combinator ∎ Strict fixed point combinator, also known as the Applicative

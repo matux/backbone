@@ -288,9 +288,9 @@ extension Dispatch {
     let insert = { _ = ·.hashes.insert($0) }
 
     Hasher()
-      => mutating(Hasher.combine(loc))
-      => Hasher.finalize
-      => unless(∈·.hashes, insert >>> fire)
+      |> mutating(Hasher.combine(loc))
+      |> Hasher.finalize
+      |> unless(∈·.hashes, insert >>> fire)
   }
 }
 

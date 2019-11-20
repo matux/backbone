@@ -67,7 +67,7 @@ extension UIView {
   @IBInspectable
   public var maskedCorners: CGRect {
     get {
-      return layer.maskedCorners.contains >>> either(1, or: 0) => {
+      return layer.maskedCorners.contains >>> either(1, or: 0) |> {
         .init($0(.layerMinXMinYCorner), $0(.layerMaxXMinYCorner),
               $0(.layerMaxXMaxYCorner), $0(.layerMinXMaxYCorner))
       }

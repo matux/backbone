@@ -361,9 +361,9 @@ extension Collection {
   ///
   /// Example:
   ///     let bad = ["1", "x", "y"]
-  ///     bad => Array.traverse(parseInt)
+  ///     bad |> Array.traverse(parseInt)
   ///     // .failure(["x is not an int", "y is not an int"])
-  ///     bad => Array.traverseM(parseInt)
+  ///     bad |> Array.traverseM(parseInt)
   ///     // .failure("x is not an int")
   ///
   /// The applicative version returns all the errors, while the monadic
@@ -398,9 +398,9 @@ extension Collection {
   ///   version returns only the first error, for example:
   ///
   ///     let bad = ["1", "x", "y"]
-  ///     bad => Array.traverse(parseInt)
+  ///     bad |> Array.traverse(parseInt)
   ///     // .failure(["x is not an int", "y is not an int"])
-  ///     bad => Array.traverseM(parseInt)
+  ///     bad |> Array.traverseM(parseInt)
   ///     // .failure("x is not an int")
   /// - Parameter transform: A closure that takes an element in this
   ///   collection.
@@ -997,8 +997,8 @@ extension Collection {
   /// If the number of elements to drop exceeds the number of elements in
   /// the sequence, the result is an empty subsequence.
   ///
-  ///     [1, 2, 3, 4, 5] => Array.drop(2) => String.init // "[3, 4, 5]"
-  ///     [1, 2, 3, 4, 5] => Array.drop(10) => String.init // "[]"
+  ///     [1, 2, 3, 4, 5] |> Array.drop(2) |> String.init // "[3, 4, 5]"
+  ///     [1, 2, 3, 4, 5] |> Array.drop(10) |> String.init // "[]"
   ///
   /// - Parameter k: The number of elements to drop from the beginning of
   ///   the sequence. `k` must be greater than or equal to zero.
@@ -1066,7 +1066,7 @@ extension Collection where Element: Equatable, SubSequence: Monoid {
   public func split(
     by element: Element
   ) -> (SubSequence, SubSequence) {
-    split(separator: element, maxSplits: 1) => {
+    split(separator: element, maxSplits: 1) |> {
       ($0.first ?? .empty, $0.second ?? .empty)
     }
   }
@@ -3426,7 +3426,7 @@ public func join<S: Sequence>(
 /// The following example shows how an array of strings can be joined to a
 /// single, comma-separated string:
 ///
-///     print(["Vivien", "Marlon", "Kim", "Karl"] => join(separator: ", "))
+///     print(["Vivien", "Marlon", "Kim", "Karl"] |> join(separator: ", "))
 ///     // Prints "Vivien, Marlon, Kim, Karl"
 ///
 /// - Parameter separator: A string to insert between each element.

@@ -26,7 +26,7 @@ public let _unless = curry(unless)
 public let _maybe = flip(_when • isTrue)
 public let _otherwise = { (f: @escaping () -> ()) in { $0 ?? f() } }
 public let _either = { f, g in _when • isTrue >>> with(f) >>> otherwise(g) }
-public let _iff = _either => flip => curry => flip
+public let _iff = _either |> flip |> curry |> flip
 
 // MARK: - Proposition
 

@@ -383,7 +383,7 @@ public func mapKeys<Key, Value, TransformedKey>(
 public func mapElements<Key, Keyʹ, Value, Valueʹ>(
   _ transform: @escaping (Key, Value) -> (key: Keyʹ, value: Valueʹ)
 ) -> ([Key: Value]) -> [Keyʹ: Valueʹ] {
-  return { $0.reduce { dict, kv in transform(kv.0, kv.1) => { dict[$0] = $1 } } }
+  return { $0.reduce { dict, kv in transform(kv.0, kv.1) |> { dict[$0] = $1 } } }
 }
 
 /// Returns a new Dictionary with the non-nil values from this Dictionary.

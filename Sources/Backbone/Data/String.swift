@@ -789,8 +789,8 @@ extension String {
     separator sep: String
   ) {
     self = subjects
-      => cross(Self.init(reflecting:), Self.init(reflecting:))
-      => { $0 ++ sep ++ $1 }
+      |> cross(Self.init(reflecting:), Self.init(reflecting:))
+      |> { $0 ++ sep ++ $1 }
   }
 }
 

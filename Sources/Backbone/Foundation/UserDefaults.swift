@@ -81,7 +81,7 @@ extension UserDefaults {
   public static let data = log(standard.data)
 
   /// Returns the date associated with the specified key.
-  public static let date = log(standard.object) => Type.as(Date.self)
+  public static let date = log(standard.object) |> Type.as(Date.self)
 
   /// Returns the url associated with the specified key.
   public static let url = log(standard.url)

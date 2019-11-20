@@ -9,9 +9,9 @@ public class FileSizeFormatter: ByteCountFormatter {
 
   static func format(_ size: Int) -> String {
     return FileSizeFormatter()
-      => \.countStyle ~ .file
-      => \.allowedUnits ~ [.useBytes, .useKB, .useMB, .useGB]
-      => flip(ByteCountFormatter.string)(.init(size))
+      |> \.countStyle ~ .file
+      |> \.allowedUnits ~ [.useBytes, .useKB, .useMB, .useGB]
+      |> flip(ByteCountFormatter.string)(.init(size))
   }
 }
 

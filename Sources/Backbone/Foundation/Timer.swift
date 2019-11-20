@@ -6,7 +6,7 @@ extension Timer /*: CustomStringConvertible*/ {
     return timeInterval.isZero
       ? "in \(DecimalFormatter.format(fireDate.timeIntervalSinceNow))s"
       : "every \(DecimalFormatter.format(timeInterval))s"
-      => { "Timer ⁞ \($0)(\(tolerance)s) valid: \(isValid)" }
+      |> { "Timer ⁞ \($0)(\(tolerance)s) valid: \(isValid)" }
   }
 }
 
@@ -42,7 +42,7 @@ extension Timer {
       withTimeInterval: *interval,
       repeats: true,
       block: fire
-    ) => \.tolerance .= *interval * 0.1
+    ) |> \.tolerance .= *interval * 0.1
   }
 
   /// Returns a `Timer` that repeatedly reschedules itself until invalidated.
@@ -105,7 +105,7 @@ extension Timer {
       withTimeInterval: *delay,
       repeats: false,
       block: discard >>> fire
-    ) => \.tolerance ~ *delay * 0.1
+    ) |> \.tolerance ~ *delay * 0.1
   }
 
   /// Returns a **non-repeating** scheduled `Timer` that will invoke a closure
@@ -148,7 +148,7 @@ extension Timer {
       withTimeInterval: *delay,
       repeats: false,
       block: { _ in when(shouldFire(), fire) }
-    ) => \.tolerance ~ *delay * 0.1
+    ) |> \.tolerance ~ *delay * 0.1
   }
 
   /// Stops the timer from ever firing again and requests its removal from its
